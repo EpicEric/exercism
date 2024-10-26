@@ -17,16 +17,13 @@ pub fn is_valid(code: &str) -> bool {
     }
     let total = numbers.as_slice().chunks(2).fold(0u32, |mut acc, digits| {
         acc += digits[0];
-        match digits.get(1) {
-            Some(digit) => {
-                let mut digit = *digit;
-                digit *= 2;
-                if digit > 9 {
-                    digit -= 9;
-                }
-                acc += digit;
+        if let Some(digit) = digits.get(1) {
+            let mut digit = *digit;
+            digit *= 2;
+            if digit > 9 {
+                digit -= 9;
             }
-            None => (),
+            acc += digit;
         };
         acc
     });
