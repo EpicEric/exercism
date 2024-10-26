@@ -11,10 +11,10 @@ fn count_letters(word: &str) -> HashMap<char, usize> {
 pub fn anagrams_for<'a>(word: &str, possible_anagrams: &'a [&str]) -> HashSet<&'a str> {
     let word_letters = count_letters(word);
     possible_anagrams
-        .into_iter()
+        .iter()
         .filter(|&anagram| anagram.to_lowercase() != word.to_lowercase())
         .filter(|&anagram| {
-            let anagram_letters = count_letters(&anagram);
+            let anagram_letters = count_letters(anagram);
             if word_letters.len() == anagram_letters.len() {
                 word_letters
                     .keys()

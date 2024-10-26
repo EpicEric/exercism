@@ -72,13 +72,13 @@ impl PartialEq for Card {
 
 impl PartialOrd for Card {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        self.value.partial_cmp(&other.value)
+        Some(self.cmp(other))
     }
 }
 
 impl Ord for Card {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.partial_cmp(other).unwrap()
+        self.value.partial_cmp(&other.value).unwrap()
     }
 }
 
@@ -97,7 +97,7 @@ enum Hand {
     StraightFlush(Card, Card, Card, Card, Card),
 }
 
-fn is_flush(cards: &Vec<Card>) -> bool {
+fn is_flush(cards: &[Card]) -> bool {
     let mut cards = cards.iter();
     let suit = cards.next().unwrap().suit;
     cards.all(|card| card.suit == suit)
@@ -137,7 +137,7 @@ impl Hand {
     fn new(slice: &str) -> Option<Hand> {
         let mut cards = slice
             .split_ascii_whitespace()
-            .map(|card| Card::new(card))
+            .map(Card::new)
             .collect::<Option<Vec<Card>>>()?;
         if cards.len() != 5 {
             return None;

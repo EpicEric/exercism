@@ -1,5 +1,5 @@
 use std::{
-    cell::{self, RefCell},
+    cell::RefCell,
     collections::{hash_map::Entry, HashMap},
     sync::atomic::{AtomicUsize, Ordering},
 };
@@ -107,7 +107,7 @@ impl<'a, T: Copy + PartialEq> Reactor<'a, T> {
                 return Err(*dependency);
             }
         }
-        let mut dependencies_vec: Vec<_> = dependencies.iter().copied().collect();
+        let mut dependencies_vec: Vec<_> = dependencies.to_vec();
         while let Some(dependency) = dependencies_vec.pop() {
             if let Some(cell) = self.input_cells.get_mut(&dependency) {
                 cell.reactors.push(CellId::Compute(id));
@@ -115,7 +115,7 @@ impl<'a, T: Copy + PartialEq> Reactor<'a, T> {
                 cell.reactors.push(CellId::Compute(id));
                 // Recurse through the reactive chain
                 for transitive_dependency in cell.dependencies.clone() {
-                    dependencies_vec.push(transitive_dependency.clone());
+                    dependencies_vec.push(transitive_dependency);
                 }
             } else {
                 unreachable!()
@@ -125,7 +125,7 @@ impl<'a, T: Copy + PartialEq> Reactor<'a, T> {
             CellId::Compute(id),
             ComputeCell {
                 computation: Box::new(compute_func),
-                dependencies: dependencies.iter().copied().collect(),
+                dependencies: dependencies.to_vec(),
                 reactors: vec![],
                 callbacks: HashMap::new(),
             },
