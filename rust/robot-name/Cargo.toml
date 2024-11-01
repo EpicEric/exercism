@@ -1,0 +1,10 @@
+[package]
+edition = "2021"
+name = "robot-name"
+version = "0.0.0"
+
+[lints.clippy]
+new_without_default = "allow"
+
+[dependencies]
+rand = "0.8.5"
